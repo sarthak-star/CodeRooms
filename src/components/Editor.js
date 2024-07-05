@@ -74,7 +74,7 @@ const CodeEditor = ({setLanguage, language, socketRef, roomId, onCodeChange }) =
             socketRef.current.off(ACTIONS.CODE_CHANGE);
             socketRef.current.off(ACTIONS.LANGUAGE_CHANGE);
         };
-    }, [socketRef.current]);
+    }, [socketRef,setLanguage]);
 
     const runCode = async () => {
         const sourceCode = editorRef.current.getValue();
