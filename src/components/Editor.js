@@ -6,13 +6,14 @@ import { CODE_SNIPPETS } from '../constants';
 import ACTIONS from '../actions';
 import { executeCode } from '../api';
 
-const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
+const CodeEditor = ({setLanguage, language, socketRef, roomId, onCodeChange }) => {
     const editorRef = useRef();
-    const [language, setLanguage] = useState("javascript");
+    
     const [isLoading, setIsLoading] = useState(false);
     const [output, setOutput] = useState([]);
     const [isError, setIsError] = useState(false);
     const [userFontSize, setUserFontSize] = useState(16);
+    const [userInput, setUserInput] = useState('');
 
     const onMount = useCallback((editor) => {
         editorRef.current = editor;
@@ -82,7 +83,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
         try {
             setIsLoading(true);
             // Replace this with your actual code execution logic
-            const { run: result } = await executeCode(language, sourceCode);
+            const { run: result } = await executeCode(language, sourceCode, userInput);
             setOutput(result.output.split("\n"));
             setIsError(!!result.stderr);
 
@@ -105,7 +106,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
         <div className='flex flex-col h-screen space-y-4'>
             <div className='h-2/3' >
                 <LanguageSelector runCode={runCode} userFontSize={userFontSize} setUserFontSize={setUserFontSize} language={language} onSelect={onSelect} />
-                <div className="p-3">
+                <div className="p-3 flex space-x-3">
                     <Editor
                         options={{
                             minimap: {
@@ -120,9 +121,13 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
                         onMount={onMount}
                         className=' rounded-2xl p-2 bg-[#1E1E1E]'
                     />
+                    <div className='bg-slate-800 w-1/4 rounded-2xl p-2 text-slate-300 space-y-3' >
+                        <h2 className='text-center' >Test Cases</h2>
+                        <textarea placeholder='Enter STDIN //' className='bg-slate-800 text-slate-300 rounded-md w-full p-2 font-semibold text-lg' type="text" id="userInput" value={userInput} onChange={(e) => setUserInput(e.target.value)} />
+                    </div>
                 </div>
             </div>
-            <div className='h-1/4 p-3'>
+            <div className=' p-3'>
                 <Output isLoading={isLoading} output={output} isError={isError} />
 
             </div>

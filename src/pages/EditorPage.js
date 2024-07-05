@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const EditorPage = () => {
-
+  const [language, setLanguage] = useState("javascript");
   const socketRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,6 +40,10 @@ const EditorPage = () => {
         socketRef.current.emit(ACTIONS.SYNC_CODE, {
           code: codeRef.current,
           socketId,
+        });
+        socketRef.current.emit(ACTIONS.LANGUAGE_CHANGE, {
+          roomId,
+          language,
         });
       })
 
@@ -90,12 +94,12 @@ const EditorPage = () => {
           </div>
         </div>
         <div className='flex flex-col space-y-3'>
-          <button className='bg-slate-200 rounded-xl p-3 font-bold text-[#A41445] text-xl'  onClick={handleCopyRoomId} >Copy Room Id</button>
+          <button className='bg-slate-200 rounded-xl p-3 font-bold text-[#A41445] text-xl' onClick={handleCopyRoomId} >Copy Room Id</button>
           <button className='bg-red-600 rounded-xl p-3 font-bold text-black text-xl' onClick={handleLeaveRoom} >Leave</button>
         </div>
       </div>
       <div className='w-5/6 h-screen' >
-        <Editor socketRef={socketRef}
+        <Editor language={language} setLanguage={setLanguage} socketRef={socketRef}
           roomId={roomId}
           onCodeChange={(code) => {
             codeRef.current = code;

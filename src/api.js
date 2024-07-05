@@ -2,7 +2,7 @@ import { LANGUAGE_VERSIONS } from "./constants";
 
 const baseURL = "https://emkc.org/api/v2/piston";
 
-export const executeCode = async (language, sourceCode) => {
+export const executeCode = async (language, sourceCode, input) => {
   const response = await fetch(`${baseURL}/execute`, {
     method: "POST",
     headers: {
@@ -16,6 +16,7 @@ export const executeCode = async (language, sourceCode) => {
           content: sourceCode,
         },
       ],
+      stdin: input
     }),
   });
 
